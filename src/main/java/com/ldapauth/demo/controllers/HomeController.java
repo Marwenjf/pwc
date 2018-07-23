@@ -105,9 +105,16 @@ public class HomeController {
         File file = new File(fileName);
         return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
     }
-    @RequestMapping(value = "getfileimg",produces = MediaType.IMAGE_PNG_VALUE, consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "getfileimg",produces = {MediaType.IMAGE_PNG_VALUE ,MediaType.IMAGE_JPEG_VALUE}, consumes = MediaType.ALL_VALUE)
     @ResponseBody
     public byte[] getFileImage(String fileName) throws Exception{
+
+        File file = new File(fileName);
+        return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
+    }
+    @RequestMapping(value = "getfiletxt",produces = MediaType.TEXT_PLAIN_VALUE, consumes = MediaType.ALL_VALUE)
+    @ResponseBody
+    public byte[] getFileTxt(String fileName) throws Exception{
 
         File file = new File(fileName);
         return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
