@@ -357,7 +357,8 @@
                                         <td ><a  th:text="${m.getPersonalDocumentVisibility()}"></a></td>
                                         <td ><a  th:text="${m.getCreated()}"></a></td>
                                         <td th:if="${m.getPersonalDocumentName().contains('.txt')}"><a  th:href="@{getfiletxt(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="btn btn-success nav-icon fa fa-edit"></a></td>
-                                        <td th:if="${m.getPersonalDocumentName().contains('.png')}"><a  th:href="@{getfileimg(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="btn btn-success nav-icon fa fa-edit"></a></td>
+                                        <td th:if="${m.getPersonalDocumentName().contains('.png')}"><a  th:href="@{getfileimgpng(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="btn btn-success nav-icon fa fa-edit"></a></td>
+                                        <td th:if="${m.getPersonalDocumentName().contains('.jpg')}"><a  th:href="@{getfileimgjpg(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="btn btn-success nav-icon fa fa-edit"></a></td>
                                         <td th:if="${m.getPersonalDocumentName().contains('.pdf')}"><a  th:href="@{getfile(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="btn btn-success nav-icon fa fa-edit"></a></td>
                                         <td ><a onclick="return confirm('Are you sure to delete?')" th:href="@{/mydocuments/delete(id=${m.getPersonalDocumentId()},page=${currentPage},search=${search})}" class="btn btn-danger nav-icon fa fa-trash"></a></td>
                                     </tr>

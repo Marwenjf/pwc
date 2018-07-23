@@ -32,25 +32,10 @@ public class GroupController {
         private UserRepository userRepository;
         @RequestMapping(value = "/allgroup",method = RequestMethod.GET)
         public java.lang.String addGroupe(Model model){
-            List<Groupe> groupes = groupeRepository.findAll();
+            List<Groupe> groupes = groupeRepository.findBySearch("",new PageRequest(0,3)).getContent();
             model.addAttribute("groups",groupes);
             return "index3";
         }
-  /*  @RequestMapping(value = "search",method = RequestMethod.GET)
-    public ModelAndView search(@ModelAttribute("newGroup") Groupe newGroup,@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search,Model model){
-        Page<Groupe> groupes = groupeRepository.findBySearch("%"+search+"%",new PageRequest(page,3));
-        int totalPage = groupes.getTotalPages();
-        int pages[] = new int[totalPage];
-        for (int i = 0; i <totalPage ; i++) {
-            pages[i] = i;
-        }
-        model.addAttribute("pages",pages);
-        model.addAttribute("groups",groupes);
-        model.addAttribute("currentPage",page);
-        model.addAttribute("search",search);
-        ModelAndView modelAndView = new ModelAndView("groups","newGroup", new Groupe());
-        return modelAndView;
-    }*/
 
     @RequestMapping(value = "/mygroups",method = RequestMethod.POST)
     public ModelAndView addMyGroup(@Valid @ModelAttribute("newGroup") Groupe newGroup, BindingResult bindingResult, @RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search, Model model){
@@ -89,18 +74,13 @@ public class GroupController {
         model.addAttribute("currentPage",page);
         model.addAttribute("search",search);
         ModelAndView modelAndView = new ModelAndView("mygroups","newGroup", new Groupe());
-
-
-
         return modelAndView;
     }
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
     public ModelAndView getAllGroups(Model model,@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search){
         Page<Groupe> groupes = null;
         if (search != "")
-        {groupes = groupeRepository.findBySearch("%"+search+"%",new PageRequest(page,3));
-
-        }
+        {groupes = groupeRepository.findBySearch("%"+search+"%",new PageRequest(page,3));}
         else
         {groupes = groupeRepository.findAll(new PageRequest(page,3));}
         int totalPage = groupes.getTotalPages();
@@ -145,9 +125,9 @@ public class GroupController {
     }
     @RequestMapping(value = "/group", method = RequestMethod.GET)
     public ModelAndView getGroup(@RequestParam(name = "idGroupe",defaultValue = "") Long idGroupe){
-            Optional<Groupe> group = groupeRepository.findById(idGroupe);
+            Groupe group = groupeRepository.getOne(idGroupe);
             ModelAndView modelAndView = new ModelAndView("group");
-            modelAndView.addObject("group",group.get());
+            modelAndView.addObject("group",group);
         return modelAndView;
     }
     @RequestMapping(value = "/groups/delete",method = RequestMethod.GET)

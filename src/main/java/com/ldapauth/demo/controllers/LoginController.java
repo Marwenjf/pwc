@@ -5,6 +5,7 @@ import com.ldapauth.demo.entity.Role;
 import com.ldapauth.demo.entity.User;
 import com.ldapauth.demo.mail.EmailService;
 import com.ldapauth.demo.mail.Mail;
+import com.ldapauth.demo.repository.RoleRepository;
 import com.ldapauth.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,12 +16,15 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("/")
 public class LoginController {
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private EmailService emailService;
     @RequestMapping(value = "login", method = RequestMethod.GET)
@@ -38,13 +42,13 @@ public class LoginController {
         if (bindingResult.hasErrors()) {
             return "redirect:/register";
         }
+
+        Role role = roleRepository.getOne("USER");
         newUser.setCreated(new Date());
         newUser.setUpdated(new Date());
         newUser.setProfilePicture("/home/marwen/Bureau/uploads/user.jpg");
         newUser.setEnabled(false);
         newUser.setBiography("No Biography :(");
-        Role role = new Role();
-        role.setRole("USER");
         newUser.setRole(role);
         userRepository.save(newUser);
         Mail mail = new Mail();

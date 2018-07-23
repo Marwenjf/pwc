@@ -365,14 +365,14 @@
                   <!-- /.post -->
 
                   <!-- Post -->
-                  <div class="post clearfix" th:each="group:${myProfile.getMyGroups()}">
+                  <div class="post clearfix" th:each="g:${myProfile.getMyGroups()}">
                     <div class="user-block">
-                      <img class="img-circle img-bordered-sm" th:src="@{dist/img/user7-128x128.jpg}" alt="User Image">
+                      <img class="img-circle img-bordered-sm" th:src="@{getpicture(userName=${myProfile.getUsername()})}" alt="User Image">
                       <span class="username">
-                          <a href="#" th:text="${group.getGroupName()}"></a>
-                          <a href="#" class="float-right btn-tool"><i class="fa fa-times"></i></a>
+                          <a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getGroupName()}"></a>
+                          <a th:href="@{group(idGroupe=${g.getId()})}" class="float-right btn-tool"><i class="fa fa-times"></i></a>
                         </span>
-                      <span class="description" th:text="${group.getCreated()}"></span>
+                      <span class="description" th:text="${g.getCreated()}"></span>
                     </div>
                     <p>
                       Lorem ipsum represents a long-held tradition for designers,

@@ -112,6 +112,7 @@ public class PersonalDocumentController {
         personalDocumentRepository.deleteById(id);
         return "redirect:/mydocuments";//?page="+page+"&search="+search;
     }
+
     @RequestMapping(value = "mydocuments/edit",method = RequestMethod.GET)
     public ModelAndView getEditPage(@RequestParam(name = "id") Long id){
         PersonalDocument personalDocument = personalDocumentRepository.getOne(id);

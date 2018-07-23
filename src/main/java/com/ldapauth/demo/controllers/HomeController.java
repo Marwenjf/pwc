@@ -1,10 +1,14 @@
 package com.ldapauth.demo.controllers;
 
 import com.ldapauth.demo.entity.Comment;
+import com.ldapauth.demo.entity.PersonalDocument;
 import com.ldapauth.demo.entity.User;
 import com.ldapauth.demo.repository.CommentRepository;
+import com.ldapauth.demo.repository.PersonalDocumentRepository;
 import com.ldapauth.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -26,6 +30,8 @@ public class HomeController {
     UserRepository userRepository;
     @Autowired
     CommentRepository commentRepository;
+    @Autowired
+    PersonalDocumentRepository personalDocumentRepository;
     @RequestMapping(method = RequestMethod.GET)
     public ModelAndView home() {
         return new ModelAndView("index");
@@ -68,13 +74,13 @@ public class HomeController {
 
         }
         editUser.setUpdated(new Date());
-        if (myProfile.getPassword() != "")
+        if (myProfile.getPassword() != "" && myProfile.getPassword() != editUser.getPassword())
             editUser.setPassword(myProfile.getPassword());
-        if (myProfile.getBiography() != "")
+        if (myProfile.getBiography() != "" && myProfile.getBiography() != editUser.getBiography())
         editUser.setBiography(myProfile.getBiography());
-        if (myProfile.getEmail() != "")
+        if (myProfile.getEmail() != "" && myProfile.getEmail() != editUser.getEmail())
         editUser.setEmail(myProfile.getEmail());
-        if (myProfile.getUsername() != "")
+        if (myProfile.getUsername() != "" && myProfile.getUsername() != editUser.getUsername())
         editUser.setUsername(myProfile.getUsername());
         userRepository.save(editUser);
         List<Comment> comments = commentRepository.findByReceiver(editUser);
@@ -105,9 +111,16 @@ public class HomeController {
         File file = new File(fileName);
         return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
     }
-    @RequestMapping(value = "getfileimg",produces = MediaType.IMAGE_PNG_VALUE , consumes = MediaType.ALL_VALUE)
+    @RequestMapping(value = "getfileimgpng",produces = MediaType.IMAGE_PNG_VALUE , consumes = MediaType.ALL_VALUE)
     @ResponseBody
-    public byte[] getFileImage(String fileName) throws Exception{
+    public byte[] getFileImagePng(String fileName) throws Exception{
+
+        File file = new File(fileName);
+        return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
+    }
+    @RequestMapping(value = "getfileimgjpg",produces = MediaType.IMAGE_JPEG_VALUE , consumes = MediaType.ALL_VALUE)
+    @ResponseBody
+    public byte[] getFileImageJpg(String fileName) throws Exception{
 
         File file = new File(fileName);
         return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
@@ -133,7 +146,7 @@ public class HomeController {
         return "redirect:/profile";
     }
     @RequestMapping(value = "commnt",method = RequestMethod.POST)
-    public String commnt(@ModelAttribute("comment") Comment comment,@RequestParam(name = "userName") String userName,Model model){
+    public String commnt(@ModelAttribute("comment") Comment comment,@RequestParam(name = "userName") String userName,@RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search,Model model){
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername();
         User sender = userRepository.findByUsername(name);
@@ -144,20 +157,50 @@ public class HomeController {
         comment.setSender(sender);
         comment.setReceiver(receiver);
         commentRepository.save(comment);
+        Page<PersonalDocument> personalDocuments = null;
+        if (search != ""){
+            personalDocuments = personalDocumentRepository.searchByPersonalDocumentCreatorAndSearch("%"+search+"%",receiver,new PageRequest(page,3));
+        }
+        else {
+            personalDocuments = personalDocumentRepository.findByPersonalDocumentCreator(receiver,new PageRequest(page,3));
+        }
+        int totalPage = personalDocuments.getTotalPages();
+        int pages[] = new int[totalPage];
+        for (int i = 0; i <totalPage ; i++) {
+            pages[i] = i;
+        }
+        model.addAttribute("pages",pages);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("search",search);
         model.addAttribute("username",userName);
-        return "redirect:/userprofile?username"+userName;
+        model.addAttribute("myDocuments",personalDocuments);
+        return "redirect:/userprofile?username"+userName+"&page="+page+"&search="+search;
     }
     @RequestMapping(value = "userprofile", method = RequestMethod.GET)
-    public ModelAndView userProfile(Model model,@RequestParam(name = "username") String userName) {
+    public ModelAndView userProfile(Model model,@RequestParam(name = "username") String userName,@RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search) {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername();
         User myProfile = userRepository.findByUsername(name);
         User userProfile = userRepository.findByUsername(userName);
         model.addAttribute("username",userName);
         System.out.println(myProfile.getProfilePicture());
+        Page<PersonalDocument> personalDocuments = null;
+
+            personalDocuments = personalDocumentRepository.searchByPersonalDocumentCreatorAndPersonalDocumentVisibilityAndSearch("%"+search+"%",userProfile,"public",new PageRequest(page,3));
+
+
+        int totalPage = personalDocuments.getTotalPages();
+        int pages[] = new int[totalPage];
+        for (int i = 0; i <totalPage ; i++) {
+            pages[i] = i;
+        }
         List<Comment> comments = commentRepository.findByReceiver(userProfile);
         model.addAttribute("comments",comments);
         model.addAttribute("comment",new Comment());
+        model.addAttribute("pages",pages);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("search",search);
+        model.addAttribute("myDocuments",personalDocuments);
         return new ModelAndView("userprofile","userProfile",userProfile);
     }
 }

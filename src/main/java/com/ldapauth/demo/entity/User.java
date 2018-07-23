@@ -15,11 +15,11 @@ import java.util.Set;
 @Table(name = "users")
 public class User implements Serializable{
 
-    @NotNull
-    @Column(name = "email",unique=true)
+    @Id
+    @Column(name = "username")
+    private String username;
+    @Column(name = "email",unique=true,nullable = false)
     private String email;
-    @Size(min=6, max=30)
-    @NotNull
     @Column(name = "password")
     private String password;
     @Column(name = "profile_picture")
@@ -27,10 +27,7 @@ public class User implements Serializable{
 
     @Column(name = "enabled")
     private boolean enabled;
-    @Id
-    @Size(min=6, max=30)
-    @Column(name = "username")
-    private String username;
+
     @Column(name = "biography")
     private String biography;
     @Column(name = "created")
