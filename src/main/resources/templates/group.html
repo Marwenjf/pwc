@@ -276,9 +276,9 @@
     <div class="card card-widget">
     <div class="card-header">
       <div class="user-block">
-
+        <img th:src="@{getpicture(userName=${group.getCreator().getUsername()})}" class="img-circle elevation-2" alt="User Image">
         <span class="username"><a href="#" th:text="${group.groupName}"></a></span>
-        <span class="description" th:text="${group.getId()}"></span>
+        <span class="description" th:text="${group.getCreated()}"></span>
       </div>
       <!-- /.user-block -->
       <div class="card-tools">
@@ -294,10 +294,6 @@
     <!-- /.card-header -->
     <div class="card-body">
       <!-- post text -->
-      <p>Created at :</p>
-      <p th:text="${group.getCreated()}"></p>
-
-
 
       <!-- Attachment -->
       <div class="attachment-block clearfix">

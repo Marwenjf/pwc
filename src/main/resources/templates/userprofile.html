@@ -313,7 +313,6 @@
                             <ul class="nav nav-pills">
                                 <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Activity</a></li>
                                 <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">Timeline</a></li>
-                                <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Settings</a></li>
                             </ul>
                         </div><!-- /.card-header -->
                         <div class="card-body">
@@ -365,14 +364,14 @@
                                     <!-- /.post -->
 
                                     <!-- Post -->
-                                    <div class="post clearfix" th:each="group:${userProfile.getMyGroups()}">
+                                    <div class="post clearfix" th:each="groupe:${userProfile.getMyGroups()}">
                                         <div class="user-block">
                                             <img class="img-circle img-bordered-sm" th:src="@{dist/img/user7-128x128.jpg}" alt="User Image">
                                             <span class="username">
-                          <a href="#" th:text="${group.getGroupName()}"></a>
+                          <a th:href="@{group(idGroupe=${groupe.getId()})}" th:text="${groupe.getGroupName()}"></a>
                           <a href="#" class="float-right btn-tool"><i class="fa fa-times"></i></a>
                         </span>
-                                            <span class="description" th:text="${group.getCreated()}"></span>
+                                            <span class="description" th:text="${groupe.getCreated()}"></span>
                                         </div>
                                         <p>
                                             Lorem ipsum represents a long-held tradition for designers,
@@ -404,7 +403,7 @@
                                         </div>
                                         <div class="card">
                                             <div class="card-header">
-                                                <h3 class="card-title" th:text="${userProfile.getUsername()+''s documents'}"></h3>
+                                                <h3 class="card-title" th:text="${userProfile.getUsername()+' s documents'}"></h3>
                                             </div>
                                             <nav class="navbar navbar-expand bg-white navbar-light">
 
@@ -424,7 +423,7 @@
 
                                             </nav>
                                             <!-- /.card-header -->
-                                            <div class="card-body">
+                                        <!--    <div class="card-body">
                                                 <table id="example2" class="table table-bordered table-striped">
                                                     <thead>
                                                     <tr>
@@ -460,6 +459,29 @@
                                                     </tr>
                                                     </tfoot>
                                                 </table>
+                                            </div>-->
+                                            <div class="card-footer bg-white">
+                                                <ul class="mailbox-attachments clearfix">
+                                                    <li th:each="m:${myDocuments.content}" th:if="${m.getPersonalDocumentVisibility() == 'public'}">
+                                                        <span class="mailbox-attachment-icon" th:if="${m.getPersonalDocumentName().contains('.pdf')}"><i class="fa fa-file-pdf-o"></i></span>
+                                                        <span class="mailbox-attachment-icon" th:if="${m.getPersonalDocumentName().contains('.txt')}"><i class="fa fa-file-word-o"></i></span>
+                                                        <span class="mailbox-attachment-icon has-img" th:if="${m.getPersonalDocumentName().contains('.png')}"><img th:src="@{getfileimgpng(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" alt="Attachment"></span>
+                                                        <span class="mailbox-attachment-icon has-img" th:if="${m.getPersonalDocumentName().contains('.jpg')}"><img th:src="@{getfileimgpng(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" alt="Attachment"></span>
+
+                                                        <div class="mailbox-attachment-info">
+                                                            <a th:if="${m.getPersonalDocumentName().contains('.txt')}" th:href="@{getfiletxt(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="mailbox-attachment-name" th:text="${m.getPersonalDocumentName()}"><i class="fa fa-paperclip"></i></a>
+                                                            <a th:if="${m.getPersonalDocumentName().contains('.pdf')}" th:href="@{getfile(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="mailbox-attachment-name" th:text="${m.getPersonalDocumentName()}"><i class="fa fa-paperclip"></i></a>
+                                                            <a th:if="${m.getPersonalDocumentName().contains('.png')}" th:href="@{getfileimgpng(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="mailbox-attachment-name" th:text="${m.getPersonalDocumentName()}"><i class="fa fa-paperclip"></i></a>
+                                                            <a th:if="${m.getPersonalDocumentName().contains('.jpg')}" th:href="@{getfileimgpng(fileName='/home/marwen/Bureau/uploads/'+${m.getPersonalDocumentName()})}" class="mailbox-attachment-name" th:text="${m.getPersonalDocumentName()}"><i class="fa fa-paperclip"></i></a>
+
+                                                            <span class="mailbox-attachment-size">
+                          1,245 KB
+                          <a th:href="@{downloadfile/__${m.getPersonalDocumentName()}__}" class="btn btn-default btn-sm float-right"><i class="fa fa-cloud-download"></i></a>
+                        </span>
+                                                        </div>
+                                                    </li>
+
+                                                </ul>
                                             </div>
                                             <div class="card-footer">
                                                 <ul class="btn-group">

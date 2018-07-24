@@ -9,6 +9,7 @@ import javax.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "groupe")
@@ -36,6 +37,20 @@ public class Groupe implements Serializable{
             inverseJoinColumns = {@JoinColumn(name="username", referencedColumnName="username")}
     )
     private User creator;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="groups_documents",
+            joinColumns = {@JoinColumn(name="group_id", referencedColumnName="group_id")},
+            inverseJoinColumns = {@JoinColumn(name="document_id", referencedColumnName="document_id")}
+    )
+    private Set<Document> groupDocuments;
+
+    public Set<Document> getGroupDocuments() {
+        return groupDocuments;
+    }
+
+    public void setGroupDocuments(Set<Document> groupDocuments) {
+        this.groupDocuments = groupDocuments;
+    }
 
     public User getCreator() {
         return creator;

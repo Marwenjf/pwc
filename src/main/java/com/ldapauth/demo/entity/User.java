@@ -70,6 +70,20 @@ public class User implements Serializable{
             inverseJoinColumns = {@JoinColumn(name="personal_document_id", referencedColumnName="personal_document_id")}
     )
     private Set<PersonalDocument> myPersonalDocuments;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="users_groups_documents",
+            joinColumns = {@JoinColumn(name="username", referencedColumnName="username")},
+            inverseJoinColumns = {@JoinColumn(name="document_id", referencedColumnName="document_id")}
+    )
+    private Set<Document> myGroupDocuments;
+
+    public Set<Document> getMyGroupDocuments() {
+        return myGroupDocuments;
+    }
+
+    public void setMyGroupDocuments(Set<Document> myGroupDocuments) {
+        this.myGroupDocuments = myGroupDocuments;
+    }
 
     public Set<PersonalDocument> getMyPersonalDocuments() {
         return myPersonalDocuments;

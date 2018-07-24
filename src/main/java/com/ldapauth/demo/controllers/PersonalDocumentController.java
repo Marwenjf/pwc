@@ -58,10 +58,10 @@ public class PersonalDocumentController {
         personalDocument.setPersonalDocumentCreator(creator);
         personalDocumentRepository.save(personalDocument);
         if (search != ""){
-            personalDocuments = personalDocumentRepository.searchByPersonalDocumentCreatorAndSearch("%"+search+"%",creator,new PageRequest(page,3));
+            personalDocuments = personalDocumentRepository.searchByPersonalDocumentCreatorAndSearch("%"+search+"%",creator,new PageRequest(page,4));
         }
         else {
-            personalDocuments = personalDocumentRepository.findByPersonalDocumentCreator(creator,new PageRequest(page,3));
+            personalDocuments = personalDocumentRepository.findByPersonalDocumentCreator(creator,new PageRequest(page,4));
         }
         int totalPage = personalDocuments.getTotalPages();
         int pages[] = new int[totalPage];
@@ -83,10 +83,10 @@ public class PersonalDocumentController {
         Page<PersonalDocument> personalDocuments = null;
         ModelAndView modelAndView = new ModelAndView("mydocuments","newPersonalDocument",new PersonalDocument());
     if (search != ""){
-     personalDocuments = personalDocumentRepository.searchByPersonalDocumentCreatorAndSearch("%"+search+"%",creator,new PageRequest(page,3));
+     personalDocuments = personalDocumentRepository.searchByPersonalDocumentCreatorAndSearch("%"+search+"%",creator,new PageRequest(page,4));
     }
     else {
-        personalDocuments = personalDocumentRepository.findByPersonalDocumentCreator(creator,new PageRequest(page,3));
+        personalDocuments = personalDocumentRepository.findByPersonalDocumentCreator(creator,new PageRequest(page,4));
     }
     int totalPage = personalDocuments.getTotalPages();
         int pages[] = new int[totalPage];
