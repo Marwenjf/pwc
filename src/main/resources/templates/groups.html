@@ -317,7 +317,7 @@
                   <td ><a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getGroupName()}"></a>
                   </td>
                   <td ><a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getCreated()}"></a></td>
-                    <td><a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getCreator().getUsername()}"></a></td>
+                    <td><a th:href="@{userprofile(username=${g.getCreator().getUsername()})}" th:text="${g.getCreator().getUsername()}"></a></td>
                    <!-- <td ><a onclick="return confirm('Are you sure to delete?')" th:href="@{/groups/delete(id=${g.getId()},page=${currentPage},search=${search})}" class="btn btn-danger nav-icon fa fa-trash"></a></td>-->
                 </tr>
 
