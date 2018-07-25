@@ -8,7 +8,7 @@ import java.util.Date;
 
 @Entity
 @Table(name = "documents")
-public class Document {
+public class GroupDocument {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "document_id")

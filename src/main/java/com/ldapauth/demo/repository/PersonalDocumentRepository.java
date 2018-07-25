@@ -17,8 +17,9 @@ Page<PersonalDocument> findByPersonalDocumentName(String personalDocumentName,Pa
 @Query("Select p from PersonalDocument p where p.personalDocumentName like :name")
 Page<PersonalDocument> findBySearch(@Param("name") String name,Pageable pageable);
 Page<PersonalDocument> findByPersonalDocumentCreator(User creator, Pageable pageable);
+List<PersonalDocument> findByPersonalDocumentCreator(User creator);
 @Query("Select p from PersonalDocument p where p.personalDocumentCreator = :creator and p.personalDocumentName like :name")
 Page<PersonalDocument> searchByPersonalDocumentCreatorAndSearch(@Param("name") String name,@Param("creator")User creator, Pageable pageable);
-    @Query("Select p from PersonalDocument p where p.personalDocumentCreator = :creator and p.personalDocumentName like :name and p.personalDocumentVisibility = :visible")
-    Page<PersonalDocument> searchByPersonalDocumentCreatorAndPersonalDocumentVisibilityAndSearch(@Param("name") String name,@Param("creator")User creator,@Param("visible") String visible, Pageable pageable);
+@Query("Select p from PersonalDocument p where p.personalDocumentCreator = :creator and p.personalDocumentName like :name and p.personalDocumentVisibility = :visible")
+Page<PersonalDocument> searchByPersonalDocumentCreatorAndPersonalDocumentVisibilityAndSearch(@Param("name") String name,@Param("creator")User creator,@Param("visible") String visible, Pageable pageable);
 }

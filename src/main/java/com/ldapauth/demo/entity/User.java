@@ -4,8 +4,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -62,7 +60,20 @@ public class User implements Serializable{
             inverseJoinColumns = {@JoinColumn(name="comment_id", referencedColumnName="comment_id")}
     )
     private Set<Comment> myComments;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="user_group_comments",
+            joinColumns = {@JoinColumn(name="username", referencedColumnName="username")},
+            inverseJoinColumns = {@JoinColumn(name="group_comment_id", referencedColumnName="group_comment_id")}
+    )
+    private Set<GroupComment> myGroupComments;
 
+    public Set<GroupComment> getMyGroupComments() {
+        return myGroupComments;
+    }
+
+    public void setMyGroupComments(Set<GroupComment> myGroupComments) {
+        this.myGroupComments = myGroupComments;
+    }
 
     @OneToMany(cascade=CascadeType.ALL)
     @JoinTable(name="users_personal_documents",
@@ -75,14 +86,14 @@ public class User implements Serializable{
             joinColumns = {@JoinColumn(name="username", referencedColumnName="username")},
             inverseJoinColumns = {@JoinColumn(name="document_id", referencedColumnName="document_id")}
     )
-    private Set<Document> myGroupDocuments;
+    private Set<GroupDocument> myGroupGroupDocuments;
 
-    public Set<Document> getMyGroupDocuments() {
-        return myGroupDocuments;
+    public Set<GroupDocument> getMyGroupGroupDocuments() {
+        return myGroupGroupDocuments;
     }
 
-    public void setMyGroupDocuments(Set<Document> myGroupDocuments) {
-        this.myGroupDocuments = myGroupDocuments;
+    public void setMyGroupGroupDocuments(Set<GroupDocument> myGroupGroupDocuments) {
+        this.myGroupGroupDocuments = myGroupGroupDocuments;
     }
 
     public Set<PersonalDocument> getMyPersonalDocuments() {

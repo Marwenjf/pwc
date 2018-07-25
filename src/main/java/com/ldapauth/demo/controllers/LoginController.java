@@ -9,6 +9,7 @@ import com.ldapauth.demo.repository.RoleRepository;
 import com.ldapauth.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,9 +39,9 @@ public class LoginController {
         return new ModelAndView("register","newUser",new User());
     }
     @RequestMapping(value = "register", method = RequestMethod.POST)
-    public String addUser(@Valid @ModelAttribute("newGroup") User newUser, BindingResult bindingResult) {
+    public ModelAndView addUser(@Valid @ModelAttribute("newGroup") User newUser, BindingResult bindingResult,Model model) {
         if (bindingResult.hasErrors()) {
-            return "redirect:/register";
+            return new ModelAndView("register","newUser",new User());
         }
 
         Role role = roleRepository.getOne("USER");
@@ -57,9 +58,10 @@ public class LoginController {
         mail.setSubject("Confirmation Mail");
         mail.setContent("http://localhost:8999/confirm/"+newUser.getUsername());
         emailService.sendSimpleMessage(mail);
-
-
-        return "redirect:/login";
+        model.addAttribute("title","Confirmation email sent");
+        model.addAttribute("message","Please check your email and confirm your account");
+        ModelAndView modelAndView = new ModelAndView("login");
+        return modelAndView;
     }
     @RequestMapping(value = "confirm/{username}", method = RequestMethod.GET)
     public String confirm(@PathVariable("username") String userName) {

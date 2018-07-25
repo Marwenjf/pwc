@@ -174,7 +174,7 @@ public class HomeController {
         model.addAttribute("search",search);
         model.addAttribute("username",userName);
         model.addAttribute("myDocuments",personalDocuments);
-        return "redirect:/userprofile?username"+userName+"&page="+page+"&search="+search;
+        return "redirect:/userprofile?username="+userName+"&page="+page+"&search="+search;
     }
     @RequestMapping(value = "userprofile", method = RequestMethod.GET)
     public ModelAndView userProfile(Model model,@RequestParam(name = "username") String userName,@RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search) {

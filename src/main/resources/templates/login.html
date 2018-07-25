@@ -23,7 +23,11 @@
     <div class="login-logo">
         <a th:href="@{/login}"><b>PWC</b></a>
     </div>
-    <!-- /.login-logo -->
+    <div class="alert alert-success alert-dismissible" th:if="${title}" th:text="${message}">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <h5><i class="icon fa fa-check" th:text="${title}"></i></h5>
+
+    </div>
     <div class="card">
         <div class="card-body login-card-body">
             <p class="login-box-msg">Sign in to start your session</p>

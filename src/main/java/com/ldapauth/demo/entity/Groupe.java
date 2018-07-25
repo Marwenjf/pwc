@@ -42,14 +42,28 @@ public class Groupe implements Serializable{
             joinColumns = {@JoinColumn(name="group_id", referencedColumnName="group_id")},
             inverseJoinColumns = {@JoinColumn(name="document_id", referencedColumnName="document_id")}
     )
-    private Set<Document> groupDocuments;
+    private Set<GroupDocument> groupGroupDocuments;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="group_user_comments",
+            joinColumns = {@JoinColumn(name="group_id", referencedColumnName="group_id")},
+            inverseJoinColumns = {@JoinColumn(name="group_comment_id", referencedColumnName="group_comment_id")}
+    )
+    private Set<GroupComment> groupComments;
 
-    public Set<Document> getGroupDocuments() {
-        return groupDocuments;
+    public Set<GroupComment> getGroupComments() {
+        return groupComments;
     }
 
-    public void setGroupDocuments(Set<Document> groupDocuments) {
-        this.groupDocuments = groupDocuments;
+    public void setGroupComments(Set<GroupComment> groupComments) {
+        this.groupComments = groupComments;
+    }
+
+    public Set<GroupDocument> getGroupGroupDocuments() {
+        return groupGroupDocuments;
+    }
+
+    public void setGroupGroupDocuments(Set<GroupDocument> groupGroupDocuments) {
+        this.groupGroupDocuments = groupGroupDocuments;
     }
 
     public User getCreator() {
