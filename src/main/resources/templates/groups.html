@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>PWC | Groups</title>
+  <title>PWC | All Groups</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" th:href="@{plugins/select2/select2.min.css}">
@@ -37,7 +37,7 @@
         <a th:href="@{/}" class="nav-link">Home</a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Groups</a>
+        <a href="#" class="nav-link">All Groups</a>
       </li>
     </ul>
 
@@ -165,85 +165,82 @@
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
-          <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-              <!-- Add icons to the links using the .nav-icon class
-                   with font-awesome or any other icon font library -->
-              <li class="nav-item">
-                  <a href="/" class="nav-link">
-                      <i class="nav-icon fa fa-home"></i>
-                      <p>
-                          Home
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <!-- Add icons to the links using the .nav-icon class
+               with font-awesome or any other icon font library -->
+          <li class="nav-item">
+            <a href="/" class="nav-link">
+              <i class="nav-icon fa fa-home"></i>
+              <p>
+                Home
 
-                      </p>
-                  </a>
+              </p>
+            </a>
+          </li>
+
+          <li class="nav-item">
+            <a th:href="@{/profile}" class="nav-link">
+              <i class="nav-icon fa fa-user"></i>
+              <p>
+                Profile
+
+              </p>
+            </a>
+          </li>
+          <li class="nav-item has-treeview">
+            <a th:href="@{/mydocuments}" class="nav-link">
+              <i class="nav-icon fa fa-file"></i>
+              <p>
+                My documents
+
+              </p>
+            </a>
+
+          </li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fa fa-users"></i>
+              <p>
+                Groups
+                <i class="right fa fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a th:href="@{/groups}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>All groups</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a th:href="@{/mygroups}" class="nav-link">
+                  <i class="fa fa-circle-o nav-icon"></i>
+                  <p>My groups</p>
+                </a>
               </li>
 
-              <li class="nav-item">
-                  <a th:href="@{/profile}" class="nav-link">
-                      <i class="nav-icon fa fa-user"></i>
-                      <p>
-                          Profile
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="/messages" class="nav-link">
+              <i class="nav-icon fa fa-paper-plane"></i>
+              <p>
+                Messages
 
-                      </p>
-                  </a>
-              </li>
-            <li class="nav-item has-treeview">
-              <a th:href="@{/mydocuments}" class="nav-link">
-                <i class="nav-icon fa fa-file"></i>
-                <p>
-                  My documents
+              </p>
+            </a>
 
-                </p>
-              </a>
+          </li>
+          <li class="nav-item">
+            <a href="/login?logout" class="nav-link">
+              <i class="nav-icon fa fa-sign-out"></i>
+              <p>
+                Logout
 
-            </li>
-            <li class="nav-item has-treeview">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fa fa-users"></i>
-                <p>
-                  Groups
-                  <i class="right fa fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a th:href="@{/groups}" class="nav-link">
-                    <i class="fa fa-circle-o nav-icon"></i>
-                    <p>All groups</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a th:href="@{/mygroups}" class="nav-link">
-                    <i class="fa fa-circle-o nav-icon"></i>
-                    <p>My groups</p>
-                  </a>
-                </li>
-
-              </ul>
-            </li>
-              <li class="nav-item">
-                  <a href="/messages" class="nav-link">
-                      <i class="nav-icon fa fa-paper-plane"></i>
-                      <p>
-                          Messages
-
-                      </p>
-                  </a>
-
-              </li>
-            <li class="nav-item">
-              <a href="/login?logout" class="nav-link">
-                <i class="nav-icon fa fa-sign-out"></i>
-                <p>
-                  Logout
-
-                </p>
-              </a>
-
-            </li>
-
-
-          </ul>
+              </p>
+            </a>
+          </li>
+        </ul>
 
 
 
@@ -264,91 +261,100 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Groups</h1>
+            <h1>All Groups</h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item"><a href="/">Home</a></li>
               <li class="breadcrumb-item active">All Groups</li>
             </ol>
           </div>
         </div>
       </div><!-- /.container-fluid -->
     </section>
-
     <!-- Main content -->
     <section class="content">
       <div class="row">
         <div class="col-12">
           <div class="card">
-
-
-
-          <div class="card">
             <div class="card-header">
-              <h3 class="card-title">My Groups</h3>
             </div>
-            <nav class="navbar navbar-expand bg-white navbar-light">
-              <form class="form-inline ml-3" method="get" th:action="@{/groups}">
-                <div class="input-group input-group-sm">
-                  <input class="form-control form-control-navbar" type="text" name="search" placeholder="Search" aria-label="Search" th:value="${search}">
-                  <div class="input-group-append">
-                    <button class="btn btn-navbar" type="submit">
-                      <i class="fa fa-search"></i>
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </nav>
+            <!-- /.card-header -->
             <div class="card-body">
-              <table id="example2" class="table table-bordered table-striped">
-                <thead>
-                <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Created at</th>
-                    <th>Owner</th>
-
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="g:${groups.content}">
-                  <td ><a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getId()}"></a></td>
-                  <td ><a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getGroupName()}"></a>
-                  </td>
-                  <td ><a th:href="@{group(idGroupe=${g.getId()})}" th:text="${g.getCreated()}"></a></td>
-                    <td><a th:href="@{userprofile(username=${g.getCreator().getUsername()})}" th:text="${g.getCreator().getUsername()}"></a></td>
-                   <!-- <td ><a onclick="return confirm('Are you sure to delete?')" th:href="@{/groups/delete(id=${g.getId()},page=${currentPage},search=${search})}" class="btn btn-danger nav-icon fa fa-trash"></a></td>-->
-                </tr>
-
-                </tbody>
-                <tfoot>
-                <tr>
-                  <th>Id</th>
-                  <th>Name</th>
-                  <th>Created at</th>
-                  <th>Owner</th>
-
-                </tr>
-                </tfoot>
-              </table>
+              <!--</ /.card-body -->
             </div>
-            <!-- /.card-body -->
-          <div class="card-footer">
-            <ul class="btn-group">
-              <li th:each="page:${pages}"  class="btn" th:classappend="${page==currentPage}?btn-primary:''"><a th:text="${page}" style="color: #000000" th:href="@{groups(page=${page},search=${search})}"></a></li>
-            </ul>
+            <!-- /.card -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">
+                  <i class="ion ion-clipboard mr-1"></i>
+                  All Groups
+                </h3>
+                <div class="card-tools">
+                  <ul class="pagination pagination-sm">
+                    <li class="page-item"><a class="page-link" th:if="${currentPage==0}" disabled th:href="@{groups(page=${currentPage-1},search=${search})}">&laquo;</a></li>
+                    <li class="page-item"><a class="page-link" th:if="${currentPage>0}" th:href="@{groups(page=${currentPage-1},search=${search})}">&laquo;</a></li>
+                    <li class="page-item" th:each="page:${pages}"><a th:classappend="${page==currentPage}?bg-primary:''" class="page-link" th:text="${page}" style="color: #1b1e21;"  th:href="@{groups(page=${page},search=${search})}"></a></li>
+                    <li class="page-item"><a class="page-link" th:if="${currentPage+1==totalPage-1}" disabled th:href="@{groups(page=${currentPage+1},search=${search})}">&raquo;</a></li>
+                    <li class="page-item"><a class="page-link" th:if="${currentPage+1<totalPage-1}" th:href="@{groups(page=${currentPage+1},search=${search})}">&raquo;</a></li>
+                  </ul>
+                </div>
+              </div>
+              <nav class="navbar navbar-expand bg-white navbar-light">
+                <!-- SEARCH FORM -->
+                <form class="form-inline ml-3" method="get" th:action="@{/groups}">
+                  <div class="input-group input-group-sm">
+                    <input class="form-control form-control-navbar" type="text" name="search" placeholder="Search" aria-label="Search" th:value="${search}">
+                    <div class="input-group-append">
+                      <button class="btn btn-navbar" type="submit">
+                        <i class="fa fa-search"></i>
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+
+              </nav>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example2" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Created at</th>
+                    <th>Owner</th>
+                    <th>Members</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr th:each="gr:${allGroupes.content}">
+                    <td ><a th:href="@{group(idGroupe=${gr.getId()})}" th:text="${gr.getGroupName()}"></a></td>
+                    <td ><a th:href="@{group(idGroupe=${gr.getId()})}" th:text="${gr.getCreated()}"></a></td>
+                    <td ><a th:text="${gr.getCreator().getUsername()}" th:href="@{userprofile(username=${gr.getCreator().getUsername()})}"></a></td>
+                    <td ><a >X</a></td>
+                  </tr>
+
+                  </tbody>
+                  <tfoot>
+                  <tr>
+
+                    <th>Name</th>
+                    <th>Created at</th>
+                    <th>Owner</th>
+                    <th>Members</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+
+            </div>
           </div>
-          </div>
-          <!-- /.card -->
         </div>
-        <!-- /.col -->
       </div>
-      </div>      <!-- /.row -->
     </section>
-    <!-- /.content -->
+
   </div>
-  <!-- /.content-wrapper -->
+
   <footer class="main-footer">
     <div class="float-right d-none d-sm-block">
       <b>Version</b> 1.0.0-alpha
@@ -363,8 +369,6 @@
   </aside>
   <!-- /.control-sidebar -->
 </div>
-<!-- ./wrapper -->
-
 <!-- jQuery -->
 <script th:src="@{plugins/jquery/jquery.min.js}"></script>
 <!-- Bootstrap 4 -->
@@ -383,17 +387,16 @@
 <script th:src="@{dist/js/demo.js}"></script>
 <!-- page script -->
 <script>
-  $(function () {
-      $('.select2').select2()
-      $('#example2').DataTable({
-          "paging": false,
-          "lengthChange": false,
-          "searching": false,
-          "ordering": true,
-          "info": false,
-          "autoWidth": true
-      });
-  });
+    $(function () {
+        $('#example2').DataTable({
+            "paging": false,
+            "lengthChange": false,
+            "searching": false,
+            "ordering": true,
+            "info": false,
+            "autoWidth": true
+        });
+    });
 
 
 </script>

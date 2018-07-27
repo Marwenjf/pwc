@@ -24,7 +24,7 @@
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
-  <!-- Navbar -->
+
   <nav class="main-header navbar navbar-expand bg-white navbar-light border-bottom">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
@@ -293,8 +293,17 @@
 
         <div class="card-header">
           <h4 class="attachment-heading" th:text="${group.groupName}"></h4>
+          <div class="card-tools" th:if="${groupDocuments.content.size() > 0}">
+            <ul class="pagination pagination-sm">
+              <li class="page-item"><a class="page-link" th:if="${currentPage-1==0}" disabled th:href="@{group(idGroupe=${idGroupe},page=${currentPage-1},search=${search})}">&laquo;</a></li>
+              <li class="page-item"><a class="page-link" th:if="${currentPage-1>0}" th:href="@{group(idGroupe=${idGroupe},page=${currentPage-1},search=${search})}">&laquo;</a></li>
+              <li class="page-item" th:each="page:${pages}"><a class="page-link" th:classappend="${page==currentPage}?bg-primary:''" th:text="${page}" style="color: #1b1e21;" th:href="@{group(idGroupe=${idGroupe},page=${page},search=${search})}"></a></li>
+              <li class="page-item"><a class="page-link" th:if="${currentPage+1==totalPage-1}" disabled th:href="@{group(idGroupe=${idGroupe},page=${currentPage+1},search=${search})}">&raquo;</a></li>
+              <li class="page-item"><a class="page-link" th:if="${currentPage+1<totalPage-1}" th:href="@{group(idGroupe=${idGroupe},page=${currentPage+1},search=${search})}">&raquo;</a></li>
+            </ul>
+          </div>
           </br>
-          <form class="form-inline ml-3" method="get" th:action="@{group(idGroupe=${idGroupe})}">
+          <form class="form-inline ml-3" method="get" th:action="@{group#idGroupe=${idGroupe}}">
             <div class="input-group input-group-sm">
               <input class="form-control form-control-navbar" type="text" name="search" placeholder="Search" aria-label="Search" th:value="${search}">
               <div class="input-group-append">
@@ -333,21 +342,32 @@
 
             </ul>
           </div>
-          <div class="card-footer" th:if="${groupDocuments.content.size() > 0}">
-            <ul class="btn-group">
-              <li th:each="page:${pages}"  class="btn" th:classappend="${page==currentPage}?btn-primary:''"><a th:text="${page}" style="color: #000000" th:href="@{group(idGroupe=${idGroupe},page=${page},search=${search})}"></a></li>
-            </ul>
+          <div class="card-footer" >
+
           </div>
 
           <!-- /.attachment-text -->
 
         <!-- /.attachment-pushed -->
       </div>
-
+      <div class="form-group">
+        <form method="post" th:action="@{uploadfile(idGroupe=${idGroupe})}" th:object="${groupDocument}" enctype="multipart/form-data">
+          <label for="exampleInputFile"></label>
+          <div class="input-group">
+            <div class="custom-file">
+              <input type="file" class="custom-file-input"  id="exampleInputFile" name="uploadfilegroup" accept="*">
+              <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+            </div>
+            <div class="input-group-append">
+              <button type="submit" class="input-group-text">Upload</button>
+            </div>
+          </div>
+        </form>
+      </div>
       <span class="float-right text-muted" th:text="${group.getGroupGroupDocuments().size()}+' files '"></span>
     </div>
     <!-- /.card-body -->
-    <div class="card-footer card-comments">
+    <div class="card-footer card-comments" th:if="${groupComments.size() > 0}">
       <div class="direct-chat-messages">
         <!-- Message. Default to the left -->
         <div class="direct-chat-msg" th:each="groupcomment:${groupComments}">
@@ -374,20 +394,7 @@
           <form th:action="@{groupcomment(idGroupe=${idGroupe})}" th:object="${gComment}" method="post">
           <input type="text" class="form-control form-control-sm" th:field="*{content}" placeholder="Press enter to post comment">
           </form>
-            <div class="form-group">
-            <form method="post" th:action="@{uploadfile(idGroupe=${idGroupe})}" th:object="${groupDocument}" enctype="multipart/form-data">
-            <label for="exampleInputFile"></label>
-            <div class="input-group">
-              <div class="custom-file">
-                <input type="file" class="custom-file-input"  id="exampleInputFile" name="uploadfilegroup" accept="*">
-                <label class="custom-file-label" for="exampleInputFile">Choose file</label>
-              </div>
-              <div class="input-group-append">
-               <button type="submit" class="input-group-text">Upload</button>
-              </div>
-            </div>
-            </form>
-          </div>
+
         </div>
 
     </div>

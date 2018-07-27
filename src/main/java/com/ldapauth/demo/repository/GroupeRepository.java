@@ -16,7 +16,7 @@ public interface GroupeRepository extends JpaRepository<Groupe,Long>{
     List<Groupe> findByGroupName(String groupName);
     Page<Groupe> findByGroupName(String groupName, Pageable pageable);
     @Query("select g from Groupe g where g.groupName like :name")
-    Page<Groupe> findBySearch(@Param("name") String name,Pageable pageable);
+    Page<Groupe> cherche(@Param("name") String name,Pageable pageable);
     Page<Groupe> findByCreator(User creator,Pageable pageable);
     @Query("select g from Groupe g where g.creator = :creator and g.groupName like :name")
     Page<Groupe> searchByCreatorAndSearch(@Param("name") String name,@Param("creator")User creator, Pageable pageable);

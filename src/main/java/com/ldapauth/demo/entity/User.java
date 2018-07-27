@@ -16,7 +16,7 @@ public class User implements Serializable{
     @Id
     @Column(name = "username")
     private String username;
-    @Column(name = "email",unique=true,nullable = false)
+    @Column(name = "email")
     private String email;
     @Column(name = "password")
     private String password;
@@ -66,6 +66,34 @@ public class User implements Serializable{
             inverseJoinColumns = {@JoinColumn(name="group_comment_id", referencedColumnName="group_comment_id")}
     )
     private Set<GroupComment> myGroupComments;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="sender_invitations",
+            joinColumns = {@JoinColumn(name="sender", referencedColumnName="username")},
+            inverseJoinColumns = {@JoinColumn(name="invitation_id", referencedColumnName="invitation_id")}
+    )
+    private Set<Invitation> sendInvitations;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="receiver_invitations",
+            joinColumns = {@JoinColumn(name="receiver", referencedColumnName="username")},
+            inverseJoinColumns = {@JoinColumn(name="invitation_id", referencedColumnName="invitation_id")}
+    )
+    private Set<Invitation> receiverInvitations;
+
+    public Set<Invitation> getSendInvitations() {
+        return sendInvitations;
+    }
+
+    public void setSendInvitations(Set<Invitation> sendInvitations) {
+        this.sendInvitations = sendInvitations;
+    }
+
+    public Set<Invitation> getReceiverInvitations() {
+        return receiverInvitations;
+    }
+
+    public void setReceiverInvitations(Set<Invitation> receiverInvitations) {
+        this.receiverInvitations = receiverInvitations;
+    }
 
     public Set<GroupComment> getMyGroupComments() {
         return myGroupComments;

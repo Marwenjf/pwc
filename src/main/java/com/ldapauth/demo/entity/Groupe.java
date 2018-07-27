@@ -49,6 +49,20 @@ public class Groupe implements Serializable{
             inverseJoinColumns = {@JoinColumn(name="group_comment_id", referencedColumnName="group_comment_id")}
     )
     private Set<GroupComment> groupComments;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="groupe_invitations",
+            joinColumns = {@JoinColumn(name="group_id", referencedColumnName="group_id")},
+            inverseJoinColumns = {@JoinColumn(name="invitation_id", referencedColumnName="invitation_id")}
+    )
+    private Set<Invitation> invitations;
+
+    public Set<Invitation> getInvitations() {
+        return invitations;
+    }
+
+    public void setInvitations(Set<Invitation> invitations) {
+        this.invitations = invitations;
+    }
 
     public Set<GroupComment> getGroupComments() {
         return groupComments;

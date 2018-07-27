@@ -3,10 +3,7 @@ package com.ldapauth.demo.controllers;
 
 
 import com.ldapauth.demo.entity.*;
-import com.ldapauth.demo.repository.GroupCommentRepository;
-import com.ldapauth.demo.repository.GroupDocumentRepository;
-import com.ldapauth.demo.repository.GroupeRepository;
-import com.ldapauth.demo.repository.UserRepository;
+import com.ldapauth.demo.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +19,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -38,18 +36,19 @@ public class GroupController {
         private GroupDocumentRepository groupDocumentRepository;
         @Autowired
         private GroupCommentRepository groupCommentRepository;
-        @RequestMapping(value = "/allgroup",method = RequestMethod.GET)
-        public java.lang.String addGroupe(Model model){
-            List<Groupe> groupes = groupeRepository.findBySearch("",new PageRequest(0,3)).getContent();
-            model.addAttribute("groups",groupes);
-            return "index3";
-        }
+        @Autowired
+        private InvitationRepository invitationRepository;
+
 
     @RequestMapping(value = "/mygroups",method = RequestMethod.POST)
-    public ModelAndView addMyGroup(@Valid @ModelAttribute("newGroup") Groupe newGroup, BindingResult bindingResult, @RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search, Model model){
+    public ModelAndView addMyGroup(@Valid @ModelAttribute("newGroup") Groupe newGroup,BindingResult bindingResult, @RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search, Model model){
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername();
         User creator = userRepository.findByUsername(name);
+        List<User> users = userRepository.findAll();
+        users.remove(creator);
+        model.addAttribute("users",users);
+
         if (bindingResult.hasErrors())
         {
             Page<Groupe> groupes = groupeRepository.findByCreator(creator,new PageRequest(page,3));
@@ -76,35 +75,18 @@ public class GroupController {
         for (int i = 0; i <totalPage ; i++) {
             pages[i] = i;
         }
-
+        model.addAttribute("totalPage",totalPage);
         model.addAttribute("pages",pages);
         model.addAttribute("groups",groupes);
         model.addAttribute("currentPage",page);
         model.addAttribute("search",search);
+        List<User> chosenUser = new ArrayList<User>();
+        model.addAttribute("chosenUsers",chosenUser);
         ModelAndView modelAndView = new ModelAndView("mygroups","newGroup", new Groupe());
         return modelAndView;
     }
-    @RequestMapping(value = "/groups", method = RequestMethod.GET)
-    public ModelAndView getAllGroups(Model model,@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search){
-        Page<Groupe> groupes = null;
-        if (search != "")
-        {groupes = groupeRepository.findBySearch("%"+search+"%",new PageRequest(page,3));}
-        else
-        {groupes = groupeRepository.findAll(new PageRequest(page,3));}
-        int totalPage = groupes.getTotalPages();
-        int pages[] = new int[totalPage];
-        for (int i = 0; i <totalPage ; i++) {
-            pages[i] = i;
-        }
-        List<User> users = userRepository.findAll();
-        model.addAttribute("users",users);
-        model.addAttribute("pages",pages);
-        model.addAttribute("groups",groupes);
-        model.addAttribute("currentPage",page);
-        model.addAttribute("search",search);
-        ModelAndView modelAndView = new ModelAndView("groups");
-        return modelAndView;
-    }
+
+
     @RequestMapping(value = "/mygroups", method = RequestMethod.GET)
     public ModelAndView getMyGroups(Model model,@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search){
         Page<Groupe> myGroupes = null;
@@ -113,7 +95,6 @@ public class GroupController {
         User creator = userRepository.findByUsername(name);
         if (search != "")
         {myGroupes = groupeRepository.searchByCreatorAndSearch("%"+search+"%",creator,new PageRequest(page,3));
-
         }
         else
         {myGroupes = groupeRepository.findByCreator(creator,new PageRequest(page,3));}
@@ -122,7 +103,11 @@ public class GroupController {
         for (int i = 0; i <totalPage ; i++) {
             pages[i] = i;
         }
+        model.addAttribute("totalPage",totalPage);
         List<User> users = userRepository.findAll();
+        users.remove(creator);
+        List<User> chosenUsers = new ArrayList<User>();
+        model.addAttribute("chosenUsers",chosenUsers);
         model.addAttribute("users",users);
         model.addAttribute("pages",pages);
         model.addAttribute("groups",myGroupes);
@@ -148,6 +133,7 @@ public class GroupController {
         for (int i = 0; i <totalPage ; i++) {
             pages[i] = i;
         }
+        model.addAttribute("totalPage",totalPage);
         List<GroupComment> groupComments = groupCommentRepository.findByGroupe(group);
         model.addAttribute("groupComments",groupComments);
         model.addAttribute("pages",pages);
@@ -196,6 +182,7 @@ public class GroupController {
         for (int i = 0; i <totalPage ; i++) {
             pages[i] = i;
         }
+        model.addAttribute("totalPage",totalPage);
         List<GroupComment> groupComments = groupCommentRepository.findByGroupe(group);
         model.addAttribute("groupComments",groupComments);
         model.addAttribute("pages",pages);
@@ -222,9 +209,15 @@ public class GroupController {
     @RequestMapping(value = "editmygroup",method = RequestMethod.GET)
     public ModelAndView geteditPage(@RequestParam(name = "id") Long id,Model model){
         Groupe groupe = groupeRepository.getOne(id);
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User creator = userRepository.findByUsername(name);
         List<User> users = userRepository.findAll();
+        users.remove(creator);
         model.addAttribute("users",users);
         model.addAttribute("groupId",id);
+        Invitation invitation = new Invitation();
+        model.addAttribute("invitation",invitation);
         ModelAndView modelAndView = new ModelAndView("edit","editGroup",groupe);
       return modelAndView;
     }
@@ -233,9 +226,25 @@ public class GroupController {
         Groupe groupe = groupeRepository.getOne(id);
         groupe.setUpdated(new Date());
         groupe.setGroupName(editGroup.getGroupName());
-
         groupeRepository.save(groupe);
         return "redirect:/mygroups";
+    }
+    @RequestMapping(value = "mygroups/invitation",method = RequestMethod.POST)
+    public String addInvitation(@ModelAttribute("invitation") Invitation invitation,@RequestParam(name = "id") Long id){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User sender = userRepository.findByUsername(name);
+        invitation.setSender(sender);
+        invitation.setStatus("invitation");
+        invitation.setGroupe(groupeRepository.getOne(id));
+        invitation.setCreated(new Date());
+        invitation.setUpdated(new Date());
+        User receiver = userRepository.getOne(invitation.getReceiver().getUsername());
+        invitation.setReceiver(receiver);
+        invitationRepository.save(invitation);
+        System.out.println(invitation.getReceiver().getEmail());
+        invitationRepository.save(invitation);
+        return "redirect:/editmygroup?id="+id;
     }
     @RequestMapping(value = "/groupcomment" , method = RequestMethod.POST)
     public String Comment(@RequestParam(name = "idGroupe") Long idGroupe,@ModelAttribute("gComment") GroupComment groupComment,@RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search,Model model){
@@ -261,6 +270,7 @@ public class GroupController {
         for (int i = 0; i <totalPage ; i++) {
             pages[i] = i;
         }
+        model.addAttribute("totalPage",totalPage);
         List<GroupComment> groupComments = groupCommentRepository.findByGroupe(group);
         model.addAttribute("groupComments",groupComments);
         model.addAttribute("pages",pages);
@@ -273,4 +283,5 @@ public class GroupController {
 
         return "redirect:/group?idGroupe="+idGroupe+"&page="+page+"&search="+search;
     }
+
 }

@@ -1,7 +1,9 @@
 package com.ldapauth.demo.controllers;
 
+import com.ldapauth.demo.entity.Groupe;
 import com.ldapauth.demo.entity.PersonalDocument;
 import com.ldapauth.demo.entity.User;
+import com.ldapauth.demo.repository.GroupeRepository;
 import com.ldapauth.demo.repository.PersonalDocumentRepository;
 import com.ldapauth.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,8 @@ public class PersonalDocumentController {
     private PersonalDocumentRepository personalDocumentRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private GroupeRepository groupeRepository;
     @Autowired
     private Environment env;
     @RequestMapping(value = "/mydocuments",method = RequestMethod.POST)
@@ -152,6 +156,30 @@ public class PersonalDocumentController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    @RequestMapping(value = "/groups", method = RequestMethod.GET)
+    public ModelAndView getGroups(Model model, @RequestParam(name = "page",defaultValue = "0")int page,@RequestParam(name = "search",defaultValue = "")String search){
+        Page<Groupe> allGroupes = null;
+if (search != "")
+        allGroupes = groupeRepository.cherche("%"+search+"%",new PageRequest(page,3));
+else
+    allGroupes = groupeRepository.findAll(new PageRequest(page,3));
+        int totalPage = allGroupes.getTotalPages();
+        int pages[] = new int[totalPage];
+        for (int i = 0; i <totalPage ; i++) {
+            pages[i] = i;
+        }
+        for (int i = 0; i < allGroupes.getContent().size(); i++) {
+            System.out.println(allGroupes.getContent().get(i));
+        }
+        System.out.println(allGroupes.getContent().size());
+        model.addAttribute("totalPage",totalPage);
+        model.addAttribute("pages",pages);
+        model.addAttribute("groups",allGroupes);
+        model.addAttribute("currentPage",page);
+        model.addAttribute("search",search);
+        ModelAndView modelAndView = new ModelAndView("allgroups");
+        return modelAndView;
 
+    }
 
 }
