@@ -25,7 +25,7 @@ public class PersonalDocument implements Serializable{
     @Column(name = "updated")
     @UpdateTimestamp
     private Date updated;
-    @OneToOne()
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinTable(name="users_personal_documents",
             joinColumns = {@JoinColumn(name="personal_document_id", referencedColumnName="personal_document_id")},
             inverseJoinColumns = {@JoinColumn(name="username", referencedColumnName="username")}

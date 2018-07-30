@@ -1,9 +1,11 @@
 package com.ldapauth.demo.controllers;
 
 import com.ldapauth.demo.entity.Comment;
+import com.ldapauth.demo.entity.Invitation;
 import com.ldapauth.demo.entity.PersonalDocument;
 import com.ldapauth.demo.entity.User;
 import com.ldapauth.demo.repository.CommentRepository;
+import com.ldapauth.demo.repository.InvitationRepository;
 import com.ldapauth.demo.repository.PersonalDocumentRepository;
 import com.ldapauth.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +35,15 @@ public class HomeController {
     CommentRepository commentRepository;
     @Autowired
     PersonalDocumentRepository personalDocumentRepository;
+    @Autowired
+    InvitationRepository invitationRepository;
     @RequestMapping(method = RequestMethod.GET)
-    public ModelAndView home() {
+    public ModelAndView home(Model model) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User myProfile = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+        model.addAttribute("invitations",invitations);
         return new ModelAndView("index");
     }
 
@@ -45,7 +55,8 @@ public class HomeController {
         List<Comment> comments = commentRepository.findByReceiver(myProfile);
         model.addAttribute("comments",comments);
         model.addAttribute("comment",new Comment());
-
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+        model.addAttribute("invitations",invitations);
         return new ModelAndView("profile","myProfile",myProfile);
     }
     @RequestMapping(value = "profile",method = RequestMethod.POST)
@@ -57,7 +68,8 @@ public class HomeController {
             List<Comment> comments = commentRepository.findByReceiver(editUser);
             model.addAttribute("comments",comments);
             model.addAttribute("comment",new Comment());
-
+            List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+            model.addAttribute("invitations",invitations);
             return new ModelAndView("profile","myProfile",editUser);
         }
         if (!file.isEmpty()){
@@ -86,15 +98,28 @@ public class HomeController {
         List<Comment> comments = commentRepository.findByReceiver(editUser);
         model.addAttribute("comments",comments);
         model.addAttribute("comment",new Comment());
-
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+        model.addAttribute("invitations",invitations);
         return new ModelAndView("profile","myProfile",editUser);
     }
     @RequestMapping(value = "messages", method = RequestMethod.GET)
-    public ModelAndView messages() {
+    public ModelAndView messages(Model model) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User myProfile = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+        model.addAttribute("invitations",invitations);
         return new ModelAndView("messages");
+
     }
     @RequestMapping(value = "chat", method = RequestMethod.GET)
-    public ModelAndView chat() {
+    public ModelAndView chat(Model model) {
+
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User myProfile = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+        model.addAttribute("invitations",invitations);
         return new ModelAndView("chat");
     }
     @RequestMapping(value = "getpicture",produces = MediaType.IMAGE_JPEG_VALUE)
@@ -133,7 +158,7 @@ public class HomeController {
         return org.apache.commons.io.IOUtils.toByteArray(new FileInputStream(file));
     }
     @RequestMapping(value = "comment",method = RequestMethod.POST)
-    public String comment(@ModelAttribute("comment") Comment comment){
+    public String comment(@ModelAttribute("comment") Comment comment,Model model){
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername();
         User sender = userRepository.findByUsername(name);
@@ -143,6 +168,8 @@ public class HomeController {
         comment.setSender(sender);
         comment.setReceiver(sender);
         commentRepository.save(comment);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(sender,"invitation");
+        model.addAttribute("invitations",invitations);
         return "redirect:/profile";
     }
     @RequestMapping(value = "commnt",method = RequestMethod.POST)
@@ -174,6 +201,8 @@ public class HomeController {
         model.addAttribute("search",search);
         model.addAttribute("username",userName);
         model.addAttribute("myDocuments",personalDocuments);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(sender,"invitation");
+        model.addAttribute("invitations",invitations);
         return "redirect:/userprofile?username="+userName+"&page="+page+"&search="+search;
     }
     @RequestMapping(value = "userprofile", method = RequestMethod.GET)
@@ -182,6 +211,8 @@ public class HomeController {
         String name = user.getUsername();
         User myProfile = userRepository.findByUsername(name);
         User userProfile = userRepository.findByUsername(userName);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(myProfile,"invitation");
+        model.addAttribute("invitations",invitations);
         model.addAttribute("username",userName);
         System.out.println(myProfile.getProfilePicture());
         Page<PersonalDocument> personalDocuments = null;

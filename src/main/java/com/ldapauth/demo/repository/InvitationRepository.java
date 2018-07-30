@@ -21,6 +21,6 @@ public interface InvitationRepository extends JpaRepository<Invitation,Long>{
     @Query("select invitation from Invitation invitation where invitation.groupe = :groupe and invitation.status = :status")
     List<Invitation> findByGroupeAndStatus(@Param("groupe") Groupe groupe,@Param("status") String status);
     List<Invitation> findByGroupeAndStatusAndAndSender(Groupe groupe,String status,User sender);
-    List<Invitation> findByGroupeAndStatusAndReceiver(Groupe groupe,String status,User receiver);
+    Invitation findByGroupeAndStatusAndReceiver(Groupe groupe,String status,User receiver);
 
 }

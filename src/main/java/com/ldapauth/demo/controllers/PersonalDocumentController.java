@@ -1,9 +1,11 @@
 package com.ldapauth.demo.controllers;
 
 import com.ldapauth.demo.entity.Groupe;
+import com.ldapauth.demo.entity.Invitation;
 import com.ldapauth.demo.entity.PersonalDocument;
 import com.ldapauth.demo.entity.User;
 import com.ldapauth.demo.repository.GroupeRepository;
+import com.ldapauth.demo.repository.InvitationRepository;
 import com.ldapauth.demo.repository.PersonalDocumentRepository;
 import com.ldapauth.demo.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class PersonalDocumentController {
@@ -36,6 +39,8 @@ public class PersonalDocumentController {
     @Autowired
     private GroupeRepository groupeRepository;
     @Autowired
+    private InvitationRepository invitationRepository;
+    @Autowired
     private Environment env;
     @RequestMapping(value = "/mydocuments",method = RequestMethod.POST)
     public ModelAndView postDocument(@Valid @ModelAttribute("newPersonalDocument") PersonalDocument personalDocument,@RequestParam(name = "uploadfile") MultipartFile file ,BindingResult bindingResult, @RequestParam(name = "page",defaultValue = "0") int page, @RequestParam(name = "search",defaultValue = "") String search,Model model){
@@ -43,6 +48,8 @@ public class PersonalDocumentController {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername();
         User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
         if (bindingResult.hasErrors()){
             return new ModelAndView("mydocuments","newPersonalDocument",new PersonalDocument());
         }
@@ -84,6 +91,8 @@ public class PersonalDocumentController {
         org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String name = user.getUsername();
         User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
         Page<PersonalDocument> personalDocuments = null;
         ModelAndView modelAndView = new ModelAndView("mydocuments","newPersonalDocument",new PersonalDocument());
     if (search != ""){
@@ -105,27 +114,47 @@ public class PersonalDocumentController {
     return modelAndView;
     }
     @RequestMapping(value = "/mydocument", method = RequestMethod.GET)
-    public ModelAndView getDocumentById(@RequestParam(name = "documentId") Long documentId) {
+    public ModelAndView getDocumentById(@RequestParam(name = "documentId") Long documentId,Model model) {
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
     PersonalDocument personalDocument = personalDocumentRepository.getOne(documentId);
     ModelAndView modelAndView = new ModelAndView("mydocument");
     modelAndView.addObject("personalDocument",personalDocument);
     return modelAndView;
     }
     @RequestMapping(value = "/mydocuments/delete",method = RequestMethod.GET)
-    public String deleteDocument(@RequestParam(name = "id") Long id,@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search){
+    public String deleteDocument(@RequestParam(name = "id") Long id,@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search,Model model){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
         personalDocumentRepository.deleteById(id);
         return "redirect:/mydocuments";//?page="+page+"&search="+search;
     }
 
     @RequestMapping(value = "mydocuments/edit",method = RequestMethod.GET)
-    public ModelAndView getEditPage(@RequestParam(name = "id") Long id){
+    public ModelAndView getEditPage(@RequestParam(name = "id") Long id,Model model){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
         PersonalDocument personalDocument = personalDocumentRepository.getOne(id);
         ModelAndView modelAndView = new ModelAndView("editdocument","editDocument",personalDocument);
         modelAndView.addObject("documentId",id);
         return modelAndView;
     }
     @RequestMapping(value = "mydocuments/edit",method = RequestMethod.POST)
-    public String editDocument(@ModelAttribute("editDocument") PersonalDocument editDocument,@RequestParam(name = "id") Long id){
+    public String editDocument(@ModelAttribute("editDocument") PersonalDocument editDocument,@RequestParam(name = "id") Long id,Model model){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
         PersonalDocument personalDocument = personalDocumentRepository.getOne(id);
         personalDocument.setPersonalDocumentName(editDocument.getPersonalDocumentName());
         personalDocument.setPersonalDocumentDescription(editDocument.getPersonalDocumentDescription());
@@ -157,12 +186,17 @@ public class PersonalDocumentController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     @RequestMapping(value = "/groups", method = RequestMethod.GET)
-    public ModelAndView getGroups(Model model, @RequestParam(name = "page",defaultValue = "0")int page,@RequestParam(name = "search",defaultValue = "")String search){
+    public ModelAndView getGroups(@RequestParam(name = "page",defaultValue = "0") int page,@RequestParam(name = "search",defaultValue = "") String search,Model model){
+        org.springframework.security.core.userdetails.User user = (org.springframework.security.core.userdetails.User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String name = user.getUsername();
+        User creator = userRepository.findByUsername(name);
+        List<Invitation> invitations = invitationRepository.findByReceiverAndStatus(creator,"invitation");
+        model.addAttribute("invitations",invitations);
         Page<Groupe> allGroupes = null;
-if (search != "")
-        allGroupes = groupeRepository.cherche("%"+search+"%",new PageRequest(page,3));
-else
-    allGroupes = groupeRepository.findAll(new PageRequest(page,3));
+        if (search != "")
+            allGroupes = groupeRepository.cherche("%"+search+"%",new PageRequest(page,3));
+        else
+            allGroupes = groupeRepository.findAll(new PageRequest(page,3));
         int totalPage = allGroupes.getTotalPages();
         int pages[] = new int[totalPage];
         for (int i = 0; i <totalPage ; i++) {

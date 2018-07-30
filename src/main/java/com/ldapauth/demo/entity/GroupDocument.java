@@ -23,13 +23,13 @@ public class GroupDocument {
     @Column(name = "updated")
     @UpdateTimestamp
     private Date updated;
-    @OneToOne()
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinTable(name="groups_documents",
             joinColumns = {@JoinColumn(name="document_id", referencedColumnName="document_id")},
             inverseJoinColumns = {@JoinColumn(name="group_id", referencedColumnName="group_id")}
     )
     private Groupe groupe;
-    @OneToOne()
+    @OneToOne(cascade=CascadeType.ALL)
     @JoinTable(name="users_groups_documents",
             joinColumns = {@JoinColumn(name="document_id", referencedColumnName="document_id")},
             inverseJoinColumns = {@JoinColumn(name="username", referencedColumnName="username")}

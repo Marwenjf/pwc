@@ -90,29 +90,43 @@
                 </div>
             </li>
             <li class="nav-item dropdown">
-                <a class="nav-link" data-toggle="dropdown" href="#">
+                <a class="nav-link" data-toggle="dropdown" th:href="@{/}">
                     <i class="fa fa-bell-o"></i>
-                    <span class="badge badge-warning navbar-badge">15</span>
+                    <span class="badge badge-warning navbar-badge" th:if="${invitations.size()>0}" th:text="${invitations.size()}"></span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                    <span class="dropdown-item dropdown-header">15 Notifications</span>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fa fa-envelope mr-2"></i> 4 new messages
-                        <span class="float-right text-muted text-sm">3 mins</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fa fa-users mr-2"></i> 8 friend requests
-                        <span class="float-right text-muted text-sm">12 hours</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item">
-                        <i class="fa fa-file mr-2"></i> 3 new reports
-                        <span class="float-right text-muted text-sm">2 days</span>
-                    </a>
-                    <div class="dropdown-divider"></div>
-                    <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                    <span class="dropdown-item dropdown-header" th:if="${invitations.size() == 0}" th:text="${invitations.size()}+' Invitations'"></span>
+                    <span class="dropdown-item dropdown-header" th:if="${invitations.size() > 0}" th:text="${invitations.size()}+' Invitations'"></span>
+                    <div class="info-box bg-danger" th:if="${invitations.size() == 0}">
+                        <div class="info-box-content">
+                            <span class="info-box-text">Invitations</span>
+                            <span class="info-box-number">Not found</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <ul class="todo-list" th:if="${invitations.size() > 0}">
+                        <li th:each="invitation:${invitations}">
+                            <div class="dropdown-divider"></div>
+                            <!-- drag handle -->
+                            <span class="handle">
+                      <i class="fa fa-ellipsis-v"></i>
+                      <i class="fa fa-ellipsis-v"></i>
+                    </span>
+
+
+                            <span class="text" th:text="${invitation.groupe.groupName}"> </span>
+                            <!-- Emphasis label -->
+                            <small class="badge badge-danger" th:text="${invitation.getCreated()}"><i class="fa fa-clock-o"></i></small>
+                            <!-- General tools such as edit or delete-->
+                            <div class="tools">
+                                <a th:href="@{/accept(id=${invitation.getIdInvitation()})}"><i class="fa fa-check"></i></a>
+                                <a th:href="@{/reject(id=${invitation.getIdInvitation()})}"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            <div class="dropdown-divider"></div>
+                        </li>
+                    </ul>
+
+                    <a th:href="@{/}" class="dropdown-item dropdown-footer">See All Notifications</a>
                 </div>
             </li>
             <li class="nav-item">
@@ -249,25 +263,36 @@
 
 
                         <form class="form-horizontal" th:action="@{/mygroups/edit(id=${groupId})}" method="post" th:object="${editGroup}">
-                            <div class="input-group input-group-sm">
+                            <div class="input-group">
                                 <label>Name</label>
-                            <br/>
+                                <br>
                                 <input class="form-control form-control-sm" th:field="*{groupName}" th:value="*{groupName}">
                                 <div class="input-group-append">
                                     <button type="submit" class="btn btn-danger">Edit</button>
                                 </div>
                             </div>
                         </form>
-<form th:action="@{/mygroups/invitation(id=${groupId})}" method="post" th:object="${invitation}">
+
+            </div>
+            <div class="card-body">
+<form th:action="@{/mygroups/invitation(id=${groupId})}" method="post" th:object="${invitation}" th:if="${users.size() >0}">
                     <div class="form-group">
                         <label>Invit Users</label>
                         <select class="form-control select2" style="width: 100%;"  th:field="*{receiver.username}">
                             <option th:each="u:${users}" th:text="${u.getUsername()}" th:value="${u.username}"></option>
                         </select>
                     </div>
-                    <button type="submit" class="btn btn-block btn-primary">invit</button>
+    <div class="card-footer clearfix">
+        <button type="submit" class="btn btn-info float-right"><i class="fa fa-edit"></i> Invite</button>
+    </div>
 </form>
-                <!--</ /.card-body -->
+            <div class="info-box bg-info" th:if="${users.size() ==0}">
+                <div class="info-box-content">
+                    <span class="info-box-text">No user</span>
+                    <span class="info-box-number">you can't invite</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
             </div>
         </div>
         <!-- /.card -->
